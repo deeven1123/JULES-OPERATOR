@@ -6,6 +6,7 @@ This application allows you to control your Windows computer using natural langu
 
 1. **Python 3.10+** installed on your Windows machine.
 2. **Google Cloud API Key** for Gemini.
+3. **Google Cloud Project** with Firestore enabled (for session logging).
 
 ## Installation
 

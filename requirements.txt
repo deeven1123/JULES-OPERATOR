@@ -7,3 +7,4 @@ pyautogui
 mss
 pillow
 pydantic
+google-cloud-firestore

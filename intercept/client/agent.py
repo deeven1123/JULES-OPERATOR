@@ -6,6 +6,7 @@ import mss
 import mss.tools
 import os
 import sys
+import uuid
 import base64
 from io import BytesIO
 from PIL import Image
@@ -23,9 +24,6 @@ def capture_screen():
 
         # Convert to PNG bytes
         img = Image.frombytes("RGB", screenshot.size, screenshot.bgra, "raw", "BGRX")
-
-        # Resize if necessary to save bandwidth/tokens (optional, keeping full res for now or scaling down slightly)
-        # img.thumbnail((1280, 720))
 
         buffered = BytesIO()
         img.save(buffered, format="PNG")
@@ -85,6 +83,11 @@ def main():
 
     print(f"Starting task: {user_prompt}")
 
+    # Generate a session ID for this task
+    session_id = str(uuid.uuid4())
+    print(f"Session ID: {session_id}")
+
+    # We still keep a local history just in case, but we rely on the server/db primarily
     previous_actions = []
 
     for step in range(MAX_STEPS):
@@ -100,6 +103,7 @@ def main():
             files = {'file': ('screenshot.png', image_bytes, 'image/png')}
             data = {
                 'prompt': user_prompt,
+                'session_id': session_id,
                 'previous_actions': json.dumps(previous_actions)
             }
 
@@ -117,6 +121,10 @@ def main():
 
         # 3. Execute Action
         done = execute_action(action_data)
+
+        # Update session ID if server returned a new one (should be same)
+        if action_data.get("session_id"):
+            session_id = action_data.get("session_id")
 
         # Record action for history
         previous_actions.append(action_data)
