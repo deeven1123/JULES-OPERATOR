@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-multipart
+google-generativeai
+requests
+pyautogui
+mss
+pillow
+pydantic
